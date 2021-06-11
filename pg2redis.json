@@ -1,0 +1,24 @@
+{
+    "users" : [
+        {
+            "key_prefix": "user", "key_field": [ "id" ] , "expired": 0,
+            "value_type" : "hash" ,
+            "value_field":[ "id" , "nick_name" , "age" , "create_at"  ]
+        },
+        {
+            "key_prefix": "user_age", "key_field": [ "id" ] , "expired": 0,
+            "value_type" : "string" ,
+            "value_field":[ "age"  ]
+        },
+        {
+            "key_prefix": "user_tags", "key_field": [ "id" ] , "expired": 0,
+            "value_type" : "set" ,
+            "value_field":[ "tags"  ]
+        },
+        {
+            "key_prefix": "user_profile", "key_field": [ "id" ] , "expired": 0,
+            "value_type" : "hash" ,
+            "value_field":[ "user_profile"  ]
+        }
+    ]
+}

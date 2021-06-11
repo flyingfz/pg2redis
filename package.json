@@ -1,0 +1,22 @@
+{
+  "name": "pg2redis",
+  "version": "1.0.0",
+  "description": "自动把pg里的数据同步到redis",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@git.isecsp.com:9922/frank/pg2redis.git"
+  },
+  "keywords": [],
+  "author": "frank",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "ioredis": "^4.27.5",
+    "pg": "^8.6.0",
+    "pino": "^6.11.3"
+  }
+}
