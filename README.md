@@ -2,6 +2,30 @@
 
 自动把pg里的数据同步到redis
 
+### 原理
+
+本程序启动之后，根据配置文件，在相关的表上创建触发器。
+
+业务代码 ，对数据库操作之后，数据库会自动调用触发器。然后， 触发器内会通过pg 的 notify 功能，向 data_sync 的 channel 发出一个 消息。
+
+本程序在运行过程中，会 使用 pg 的client , listen data_sync 这个 channel .
+
+当收到了 notify 之后，遍历 配置 里 与此notify 相关表的所有子配置项。
+
+如果 子配置项 的 value_field 有多个字段 (且 value_field 里面的数据库字段类型 不能包含 复合类型) ， 对应存储为 hash 。
+
+
+如果 子配置项的 value_field 是单个字段，
+
+根据字段的数据库类型:
+
+    简单类型 对应存储成 string。 例如 text , number ...
+
+    复合类型 , 必须单独配置为一个 子配置项 。
+    text[],int[]  对应为 Set
+    json ， 不能包含 nest object , 此时默认按照 hash 存储。
+
+
 ### 配置
 总共需要3类配置 ， 使用 环境变量注入到进程中。
 
@@ -89,28 +113,6 @@ create table users (
 );
 ```
 
-原理:
-
-本程序 ，启动之后，根据配置文件，在相关的表上创建触发器。
-
-业务代码 ，对数据库操作之后，数据库会自动调用触发器。然后， 触发器内会通过pg 的 notify 功能，向 data_sync 的 channel 发出一个 消息。
-
-本程序在运行过程中，会 使用 pg 的client , listen data_sync 这个 channel .
-
-当收到了 notify 之后，遍历 配置 里 与此notify 相关表的所有子配置项。
-
-如果 子配置项 的 value_field 有多个字段 (且 value_field 里面的数据库字段类型 不能包含 复合类型) ， 对应存储为 hash 。
-
-
-如果 子配置项的 value_field 是单个字段，
-
-根据字段的数据库类型:
-
-    简单类型 对应存储成 string。 例如 text , number ...
-
-    复合类型 , 必须单独配置为一个 子配置项 。
-    text[],int[]  对应为 Set
-    json ， 不能包含 nest object , 此时默认按照 hash 存储。
 
 使用默认的示例配置文件  启动 进程之后， 执行以下 sql 语句:
 
